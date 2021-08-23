@@ -51,9 +51,11 @@ func Server(tracer *go2sky.Tracer, opts ...Option) middleware.Middleware {
 	options := &options{
 		reportTags: []string{},
 	}
+
 	for _, o := range opts {
 		o(options)
 	}
+
 	return func(handler middleware.Handler) middleware.Handler {
 		return func(ctx context.Context, req interface{}) (interface{}, error) {
 			if tr, ok := transport.FromServerContext(ctx); ok {
