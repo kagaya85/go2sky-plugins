@@ -23,20 +23,45 @@ on:
       - master
 
 jobs:
+  Changes:
+    runs-on: ubuntu-latest
+    outputs:
+      e2e_file: ${{ steps.filter.outputs.changes }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            # e2e_file path: plugin path 
+            gear/test/gear_plugin_test.yaml: gear/**
+            gin/v2/test/gin_plugin_test.yaml: gin/v2/**
+            gin/v3/test/gin_plugin_test.yaml: gin/v3/**
+            go-restful/test/go_restful_plugin_test.yaml: go-restful/**
+            micro/test/go_micro_plugin_test.yaml: micro/**
+            resty/test/go_resty_plugin_test.yaml: resty/**
+            kratos/test/go_kratos_plugin_test.yaml: kratos/**
+            sql/test/sql_plugin_test.yaml: sql/**
+            kafkareporter/test/go_kafka_reporter_plugin_test.yaml: kafkareporter/**
+            dubbo-go/test/dubbo_go_plugin_test.yaml: dubbo-go/**
+            gorm/test/gorm_plugin_test.yaml: gorm/**
+
   PluginsTest:
     name: Plugin
+    needs: Changes
+    if: ${{ needs.Changes.outputs.e2e_file != '[]' && needs.Changes.outputs.e2e_file != '' }}
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        case:
-          - { name: 'Gear', e2e_file: 'gear/test/gear_plugin_test.yaml' }
-          - { name: 'Gin v2', e2e_file: 'gin/v2/test/gin_plugin_test.yaml' }
-          - { name: 'Gin v3', e2e_file: 'gin/v3/test/gin_plugin_test.yaml' }
-          - { name: 'Go Restful', e2e_file: 'go-restful/test/go_restful_plugin_test.yaml' }
-          - { name: 'Go Micro', e2e_file: 'micro/test/go_micro_plugin_test.yaml' }
-          - { name: 'Go Resty', e2e_file: 'resty/test/go_resty_plugin_test.yaml' }
+        e2e_file: ${{ fromJSON(needs.Changes.outputs.e2e_file) }}
     steps:
       - uses: actions/checkout@v2
       - uses: apache/skywalking-infra-e2e@main
         with:
-          e2e-file: ${{ matrix.case.e2e_file }}
+          e2e-file: ${{ matrix.e2e_file }}
+      - name: Show Container Logs
+        if: ${{ failure() }}
+        run: docker ps -a | grep -v CONTAINER | awk '{print $1}' | xargs -i docker logs {}
+      - name: Cleanup
+        if: ${{ failure() }}
+        run: e2e cleanup -c ${{ matrix.e2e_file }}
