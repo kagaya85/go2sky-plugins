@@ -14,7 +14,7 @@
 // limitations under the License.
 //
 
-package sql
+package driver
 
 import (
 	"database/sql/driver"

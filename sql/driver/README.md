@@ -1,9 +1,9 @@
-# Go2Sky with database/sql
+# Go2Sky with database/sql/driver
 
 ## Installation
 
 ```bash
-go get -u github.com/SkyAPM/go2sky-plugins/sql
+go get -u github.com/SkyAPM/go2sky-plugins/sql/driver
 ```
 
 ## Usage
@@ -14,7 +14,7 @@ import (
 
 	"github.com/SkyAPM/go2sky"
 	"github.com/SkyAPM/go2sky/reporter"
-	sqlPlugin "github.com/SkyAPM/go2sky-plugins/sql"
+	sqlPlugin "github.com/SkyAPM/go2sky-plugins/sql/driver"
 	"github.com/go-sql-driver/mysql"
 )
 

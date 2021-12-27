@@ -23,7 +23,7 @@ import (
 	"log"
 	"net/http"
 
-	sqlPlugin "github.com/SkyAPM/go2sky-plugins/sql"
+	sqlPlugin "github.com/SkyAPM/go2sky-plugins/sql/driver"
 
 	"github.com/SkyAPM/go2sky"
 	"github.com/SkyAPM/go2sky/reporter"

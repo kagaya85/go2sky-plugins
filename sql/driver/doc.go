@@ -14,5 +14,5 @@
 // limitations under the License.
 //
 
-// Package sql is a plugin that can be used to trace database/sql.
-package sql
+// Package driver is a plugin that can be used to trace database/sql.
+package driver
